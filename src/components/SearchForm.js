@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import SearchBox from "./SearchBox";
+import Button from "./Button";
 
 const SearchForm = () => {
     const inputRef = useRef();
@@ -7,8 +8,8 @@ const SearchForm = () => {
     return(
         <div>
             <SearchBox ref={inputRef} />
-            <button onClick={() => inputRef.current.focus()} >Focus</button>
-            <button onClick={() => inputRef.current.clear()} >Clear</button>
+            <Button text='Focus' tooltipMessage='Focus on Search!' onClick={() => inputRef.current.focus()} />
+            <Button text='Clear' tooltipMessage='Clear Search!' onClick={() => inputRef.current.clear()} />
         </div>
     );
 }
