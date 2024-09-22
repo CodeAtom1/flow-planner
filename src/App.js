@@ -1,34 +1,61 @@
-import logo from './logo.svg';
-import './App.css';
-import SearchForm from './components/SearchForm';
-import UserList from './components/UserList';
-import { useState, useRef } from 'react';
-import Tooltip from './components/Tooltip';
+
+import './styles/App.css';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import SignIn from './pages/SignIn'
+import { Dashboard } from './pages/Dashboard';
+import ProtectedRoute from './pages/ProtectedRoute';
+import { useMsal } from "@azure/msal-react";
+import { useContext, useEffect } from 'react';
+import SessionContext from './SessionContext';
+import SessionProvider from './SessionProvider';
 
 function App() {
-  const buttonRef = useRef(null);
+  //const { instance } = useMsal();
+  var {user, login} = useContext(SessionContext);
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <SearchForm />
-        <UserList />
-      </header>
+  const { instance, accounts, inProgress } = useMsal();
 
-      {/* <button ref={buttonRef}
-        onMouseEnter={() => setIsTooltipVisible(true)}
-        onMouseLeave={() => setIsTooltipVisible(false)}
-        style={{padding: '10px 20px', fontSize: '16px'}}>
-          Hover over me
-        </button>
-      {isTooltipVisible && (
-        <Tooltip targetRef={buttonRef}>
-          This is a tooltip using portals!
-        </Tooltip>
-      )} */}
-    </div>
-  );
+  useEffect( () =>{
+    instance.handleRedirectPromise().then((response) => {
+        if (response) {
+          login(response.account.username);
+            // You can handle the token or account info here
+            console.log(response);
+        }
+    });
+  },[instance]);
+
+ //return ;
+
+    
+if (accounts.length > 0) {
+    return <>
+    {/* <Router>
+      <Routes>
+        <Route path="/" element={<Dashboard/>} />
+          <Route path="/login" element={<SignIn/>} />
+          <Route path="/" element={<ProtectedRoute />} >
+            <Route path="/" element={<Dashboard/>} />
+          </Route>
+      </Routes>
+    </Router> */}
+    <Dashboard />
+    <span>There are currently {accounts.length} users signed in!</span>
+    </>
+} else if (inProgress === "login") {
+    return <span>Login is currently in progress!</span>
+} else {
+    return (
+        <>
+            <span>There are currently no users signed in!</span>
+            <SignIn/>
+        </>
+    );
 }
+
+}
+
+
+
 
 export default App;
