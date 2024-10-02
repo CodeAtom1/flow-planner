@@ -52,7 +52,7 @@ function App() {
     if (accounts.length > 0) {
       requestToken();
     }
-  },[instance,accounts]);
+  },[accounts]);
 
  //return ;
 
