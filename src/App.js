@@ -8,6 +8,7 @@ import { useMsal } from "@azure/msal-react";
 import { useContext, useEffect } from 'react';
 import SessionContext from './SessionContext';
 import SessionProvider from './SessionProvider';
+import { msalConfig } from './config';
 
 function App() {
   //const { instance } = useMsal();
@@ -18,12 +19,40 @@ function App() {
   useEffect( () =>{
     instance.handleRedirectPromise().then((response) => {
         if (response) {
-          login(response.account.username);
+          requestToken();
+          var token = JSON.parse(sessionStorage.getItem(`msal.token.keys.${instance.controller.config.auth.clientId}`)).accessToken[0]
+          login(response.account.username, token);
             // You can handle the token or account info here
             console.log(response);
         }
     });
-  },[instance]);
+
+
+    const requestToken = async () => {
+      try {
+        // If the user is already signed in, use acquireTokenSilent
+        const silentRequest = {
+          ...msalConfig,
+          account: accounts[0], // User account
+        };
+
+        const response = await instance.acquireTokenSilent(silentRequest);
+        console.log('Access Token:', response.accessToken);
+      } catch (error) {
+        // If silent token acquisition fails, fall back to interactive
+        if (error?.name == 'InteractionRequiredAuthError') {
+          const interactiveResponse = await instance.acquireTokenPopup(msalConfig);
+          console.log('Interactive Access Token:', interactiveResponse.accessToken);
+        } else {
+          console.error(error);
+        }
+      }
+    };
+
+    if (accounts.length > 0) {
+      requestToken();
+    }
+  },[instance,accounts]);
 
  //return ;
 

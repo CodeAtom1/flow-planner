@@ -9,14 +9,16 @@ import SessionContext from "../SessionContext";
 const SignIn = () => {
     
     const isAuthenticated = useIsAuthenticated();
-    const { instance, inProgress } = useMsal();
+    const { instance, inProgress, accounts } = useMsal();
     const {login} = useContext(SessionContext);
 
     const handleLogin = () => {
         if(isAuthenticated)
         {            
             const accounts = instance.getAllAccounts();
-            login(accounts[0].username, true);
+            var token = JSON.parse(sessionStorage.getItem(`msal.token.keys.${instance.controller.config.auth.clientId}`)).accessToken[0];
+            login(accounts[0].username, token);
+        
         }
         else if (inProgress === InteractionStatus.None && !isAuthenticated) {
             instance.loginRedirect({
