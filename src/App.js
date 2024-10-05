@@ -12,7 +12,7 @@ import { msalConfig } from './config';
 
 function App() {
   //const { instance } = useMsal();
-  var {user, login} = useContext(SessionContext);
+  var {user, login, setToken} = useContext(SessionContext);
 
   const { instance, accounts, inProgress } = useMsal();
 
@@ -38,6 +38,8 @@ function App() {
 
         const response = await instance.acquireTokenSilent(silentRequest);
         console.log('Access Token:', response.accessToken);
+        setToken(response.accessToken);
+
       } catch (error) {
         // If silent token acquisition fails, fall back to interactive
         if (error?.name == 'InteractionRequiredAuthError') {
