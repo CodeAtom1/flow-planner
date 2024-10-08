@@ -4,12 +4,34 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        // {
+        //     "type": "node",
+        //     "request": "launch",
+        //     "name": "npm run start",
+        //     // "url": "https://localhost:3000",
+        //     // "webRoot": "${workspaceFolder}",
+        //     "runtimeExecutable": "npm",
+        //     "runtimeArgs": [
+        //         "start"
+        //     ],
+        //     "console": "integratedTerminal",
+        //     "port": 9229,
+        //     "breakOnLoad": true,
+        //     "sourceMaps": true,
+        // },
         {
+            "name": "Launch edge with npm start",
             "type": "msedge",
             "request": "launch",
-            "name": "Launch Edge against localhost",
-            "url": "https://localhost:3000",
-            "webRoot": "${workspaceFolder}"
-        }
+            "url": "http://localhost:3000",  // Replace with your app’s URL
+            "webRoot": "${workspaceFolder}/src", // Adjust this path according to your project structure
+            "sourceMaps": true,
+            "preLaunchTask": "npm: start", // Runs the npm start command before launching Chrome
+            //"postDebugTask": "npm: kill-port 3000", // Kills the npm start process after debugging
+            "runtimeArgs": [
+              "--remote-debugging-port=9222"
+            ],
+            "skipFiles": ["<node_internals>/**"]
+          }
     ]
 }

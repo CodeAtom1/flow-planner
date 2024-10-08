@@ -17,7 +17,7 @@ const SignIn = () => {
         {            
             const accounts = instance.getAllAccounts();
             var token = JSON.parse(sessionStorage.getItem(`msal.token.keys.${instance.controller.config.auth.clientId}`)).accessToken[0];
-            login(accounts[0].username, token);
+            login(accounts[0].username);
         
         }
         else if (inProgress === InteractionStatus.None && !isAuthenticated) {

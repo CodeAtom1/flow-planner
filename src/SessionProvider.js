@@ -2,10 +2,10 @@ import { useState } from "react";
 import SessionContext from "./SessionContext";
 
 const SessionProvider = ({ children }) => {
-    const [user, setUser] = useState({email: '', isAuthenticated:false, accessToken:''});
+    const [user, setUser] = useState({email: '', isAuthenticated:false, token:''});
 
-    const login = (email, token)=>{
-        setUser({email: email, isAuthenticated:true, token: token});
+    const login = (email)=>{
+        setUser(prevState => ({...prevState, email: email, isAuthenticated:true}));
     }
     
     const setToken = (token)=>{

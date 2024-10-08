@@ -3,6 +3,7 @@ import SideBar from "../components/SideBar";
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import UserList from "../components/UserList";
 import { TopNavBar } from "../components/TopNavBar";
+import WeatherWidget from "../components/WeatherWidget";
 export const Dashboard = () => {
 
     return (
@@ -12,7 +13,7 @@ export const Dashboard = () => {
                 <SideBar/>
                 <TopNavBar>
                     <Routes>
-                        <Route path="/users" element={<UserList />} />
+                        <Route path="/users" element={<WeatherWidget />} />
                         <Route path="/dashboard" element={<Content />} />
                     </Routes>
                 </TopNavBar>

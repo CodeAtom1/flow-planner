@@ -1,57 +1,55 @@
 import React, {useState, useMemo, useContext} from "react";
 import SessionContext from "../SessionContext";
 
-const {user} = useContext(SessionContext);
-
-const users = [
-    { id: 1, name: 'John Doe', age: 25},
-    { id: 2, name: 'Bob Marlay', age:22},
-    { id: 3, name: 'Ken Benlay', age:32},
-    { id: 4, name: 'Rony Stephen', age: 51}
-    //Imagine this has milions of records
-  ];
-
-  const getData = async () => {
-    try {
-    
-      const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+  const getData = async (token) => {
+    var weatherList =[];
+    try {    
+      const response = await fetch('https://localhost:7095/WeatherForecast', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.token}`,
+          'Authorization': `Bearer ${token}`,
         },
-        body: '',
       });
       
-      const data = await response.json();
-      console.log(data);
+      const responseJson = await response.json();
+      weatherList = [responseJson];
+      console.log(weatherList);
     } catch (error) {
       console.error('Error:', error);
     }
+    finally
+    {
+      return weatherList;
+    }
   };
 
-const UserList = () =>{
+const WeatherWidget = async () =>{
     const [searchTerm, setSearchTerm] = useState("");
+
+    const {user} = useContext(SessionContext);
+    const weatherList = await getData(user.token);
     if(user.token != '')
         console.log(user.token);
-    const filtredUsers = useMemo(() => {
-        console.log("Filtering users...");
-        return users.filter((user) => user.name.toLowerCase().includes(searchTerm.toLowerCase()))
+
+    const filteredWeatherList = useMemo(() => {
+        console.log("Filtering weather...");
+        return weatherList.filter((weather) => weather.Summary.toLowerCase().includes(searchTerm.toLowerCase()))
     },[searchTerm]);
 
     return (
     <div>
-        <input type="text" placeholder="Search users" value={searchTerm} 
+        <input type="text" placeholder="Search weather" value={searchTerm} 
         onChange={(e) => setSearchTerm(e.target.value)} />
         <ul>
             {
-                filtredUsers.map((user) =>
-                (<li key={user.id}>
-                    {user.name} - Age {user.age}
+                filteredWeatherList.map((weather) =>
+                (<li key={weather.Date}>
+                    {weather.Summary} - Age {weather.TemperatureC}
                 </li>))
             }
         </ul>
     </div>)
 }
 
-export default UserList;
+export default WeatherWidget;
